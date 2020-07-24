@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1029978223489",
+    "firebase_url": "https://squad-builder-repository.firebaseio.com",
+    "project_id": "squad-builder-repository",
+    "storage_bucket": "squad-builder-repository.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029978223489:android:013de258e1f3f74e78ae80",
+        "android_client_info": {
+          "package_name": "com.example.squadbuilderrepository"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1029978223489-dvfvmhutmon61ud1tjets7lvhkj1vm9c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.squadbuilderrepository",
+            "certificate_hash": "6096e78727fa835b703bebfa52a14e39622df7da"
+          }
+        },
+        {
+          "client_id": "1029978223489-d9486iplei8ktuvssl1ke5sneqlfffap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtx6hujBh3LX3GgN7W_p-K0YcBc35hUgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1029978223489-d9486iplei8ktuvssl1ke5sneqlfffap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

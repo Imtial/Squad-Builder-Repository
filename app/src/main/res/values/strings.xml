@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">Squad Builder Repository</string>
+    <string name="profile_picture_description">Profile Picture</string>
+    <string name="position_label">Position</string>
+    <string name="name_label">Name</string>
+    <string name="enter_price_hint">Enter Price</string>
+    <string name="enter_rating_hint">Enter Rating</string>
+    <string name="dollar_sign">$</string>
+    <string name="confirm_label">Confirm</string>
+
+    <!--Array of Positions for Spinner-->
+    <string-array name="position_list">
+        <item>GK</item>
+        <item>LB</item>
+        <item>CB</item>
+        <item>RB</item>
+        <item>CDM</item>
+        <item>CM</item>
+        <item>CAM</item>
+        <item>RM</item>
+        <item>LM</item>
+        <item>LW</item>
+        <item>FW</item>
+        <item>ST</item>
+        <item>RW</item>
+    </string-array>
 </resources>
