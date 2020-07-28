@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -13,12 +14,24 @@
         android:layout_marginVertical="8dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_undo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/fab_add_player"
+        app:layout_constraintEnd_toEndOf="@id/fab_add_player"
+        android:layout_marginVertical="8dp"
+        android:backgroundTint="@color/colorYellow"
+        android:src="@drawable/ic_baseline_undo"
+        android:visibility="gone"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="16dp"
         android:src="@drawable/ic_baseline_add"/>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

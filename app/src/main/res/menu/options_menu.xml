@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_push_local"
+        android:title="@string/push_local_database"
+        android:icon="@drawable/ic_baseline_cloud_upload"
+        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu_pull_cloud"
+        android:title="@string/pull_cloud_database"
+        android:icon="@drawable/ic_baseline_cloud_download"
+        app:showAsAction="ifRoom"/>
+</menu>

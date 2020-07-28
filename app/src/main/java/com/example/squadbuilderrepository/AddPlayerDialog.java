@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.squadbuilderrepository.Database.Player;
+import com.example.squadbuilderrepository.Utils.ImageUtil;
 import com.example.squadbuilderrepository.Utils.PlayerUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,6 +56,8 @@ public class AddPlayerDialog extends DialogFragment {
 
     private FirebaseFirestore mDB;
     private StorageReference mStorageRef;
+
+    private DataSetChangeListener mListener;
 
     public AddPlayerDialog() {
         mDB = FirebaseFirestore.getInstance();
@@ -105,6 +107,9 @@ public class AddPlayerDialog extends DialogFragment {
                 String priceString = mEditTextPrice.getText().toString().trim();
                 String ratingString = mEditTextRating.getText().toString().trim();
 
+                if (mImageUri == null) {
+                    Toast.makeText(getContext(), "Provide an image.", Toast.LENGTH_SHORT).show();
+                }
                 if (mPlayerName.length() == 0) {
                     mEditTextName.setError("Name must be provided");
                 }
@@ -118,41 +123,40 @@ public class AddPlayerDialog extends DialogFragment {
                     mEditTextRating.setError("This field cannot be empty.");
                 }
 
-                if (mPlayerName.length() > 0 && mPlayerName.length() <= 40
+                if (mImageUri != null && mPlayerName.length() > 0 && mPlayerName.length() <= 40
                         && priceString.length() > 0 && ratingString.length() > 0) {
                     mPlayerPrice = Double.parseDouble(priceString);
                     mPlayerRating = Double.parseDouble(ratingString);
 
                     final Player currentPlayer = new Player(mPlayerName, mPlayerPosition,
                             mPlayerPrice, mPlayerRating, mImageUri.toString());
-                    uploadFile(currentPlayer);
+
+                    DocumentReference docRef = mDB.collection("players")
+                            .document(PlayerUtil.getTypeFromPosition(currentPlayer.getPosition()))
+                            .collection("info").document();
+                    String uploadId = docRef.getId();
+                    currentPlayer.setPid(uploadId);
+
+                    insertIntoLocalDB(currentPlayer);
+//                    uploadFile(currentPlayer);
                 }
             }
         });
         return rootView;
     }
 
-    private String getExtensionFromUri(Uri mImageUri) {
-        return MimeTypeMap.getSingleton()
-                .getExtensionFromMimeType(getActivity().getContentResolver().getType(mImageUri));
-    }
-
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
     private void uploadFile (final Player currentPlayer) {
 
-        DocumentReference docRef = mDB.collection("players").document(PlayerUtil.getTypeFromPosition(currentPlayer.getPosition()))
-                .collection("info").document();
-        String uploadId = docRef.getId();
-        currentPlayer.setPid(uploadId);
-
         StorageReference imageRef = mStorageRef.child(currentPlayer.getPid()
-                + "." + getExtensionFromUri(mImageUri));
+                + "." + ImageUtil.getExtensionFromUri(getContext(), mImageUri));
 
         imageRef.putFile(mImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -164,7 +168,7 @@ public class AddPlayerDialog extends DialogFragment {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         currentPlayer.setDownloadUrl(uri.toString());
-                                        insertIntoDatabase(currentPlayer);
+                                        insertIntoCloud(currentPlayer);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -195,7 +199,7 @@ public class AddPlayerDialog extends DialogFragment {
                 });
     }
 
-    private void insertIntoDatabase(final Player currentPlayer) {
+    private void insertIntoCloud(final Player currentPlayer) {
         DocumentReference docRef = mDB.collection("players").document(PlayerUtil.getTypeFromPosition(currentPlayer.getPosition()))
                 .collection("info").document(currentPlayer.getPid());
         docRef.set(currentPlayer)
@@ -214,15 +218,25 @@ public class AddPlayerDialog extends DialogFragment {
                 });
     }
 
+    private void insertIntoLocalDB (Player currentPlayer) {
+        if (currentPlayer.getPid() != null && currentPlayer.getPid().length() > 0
+                && mListener != null) {
+            mListener.insertItem(currentPlayer);
+            getActivity().getSupportFragmentManager().beginTransaction().remove(AddPlayerDialog.this).commit();
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             mImageUri = data.getData();
+            getActivity().getContentResolver().takePersistableUriPermission(mImageUri,
+                    data.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION);
             Picasso.get()
                     .load(mImageUri)
-                    .resize(240, 240)
+                    .resize(256, 256)
                     .centerCrop()
                     .into(mPlayerImage);
         }
@@ -235,5 +249,13 @@ public class AddPlayerDialog extends DialogFragment {
         if (mImageUri != null) outState.putString("uri", mImageUri.toString());
         outState.putString("price", mEditTextPrice.getText().toString());
         outState.putString("rating", mEditTextRating.getText().toString());
+    }
+
+    public interface DataSetChangeListener {
+        void insertItem(Player player);
+    }
+
+    public void setDataSetChangeListener (DataSetChangeListener dataSetChangeListener) {
+        mListener = dataSetChangeListener;
     }
 }

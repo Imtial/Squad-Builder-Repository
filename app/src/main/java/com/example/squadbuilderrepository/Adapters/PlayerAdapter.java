@@ -1,6 +1,8 @@
 package com.example.squadbuilderrepository.Adapters;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.squadbuilderrepository.Database.Player;
@@ -24,6 +27,16 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     public PlayerAdapter(Context context, List<Player> players) {
         mContext = context;
         mPlayers = players;
+    }
+
+    public void setPlayers(List<Player> mPlayers) {
+        this.mPlayers = mPlayers;
+        notifyDataSetChanged();
+    }
+
+    public void deleteItem (int position) {
+        mPlayers.remove(position);
+        notifyItemRemoved(position);
     }
 
     @NonNull
@@ -43,8 +56,21 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         holder.tvPrice.setText(priceString);
         holder.tvRating.setText(String.valueOf(currentPlayer.getRating()));
 
+//        Picasso.get()
+//                .load(currentPlayer.getDownloadUrl())
+//                .placeholder(R.drawable.ic_baseline_person)
+//                .resize(80, 80)
+//                .centerCrop()
+//                .into(holder.ivPicture);
+        DocumentFile docFile = DocumentFile.fromSingleUri(mContext, Uri.parse(currentPlayer.getImageUri()));
+        if (docFile!= null && !docFile.exists()) {
+            Log.d("IMAGE_URI", currentPlayer.getImageUri() + " non-existent");
+        } else {
+            Log.d("IMAGE_URI", currentPlayer.getImageUri() + " exists");
+        }
+
         Picasso.get()
-                .load(currentPlayer.getDownloadUrl())
+                .load(currentPlayer.getImageUri())
                 .placeholder(R.drawable.ic_baseline_person)
                 .resize(80, 80)
                 .centerCrop()

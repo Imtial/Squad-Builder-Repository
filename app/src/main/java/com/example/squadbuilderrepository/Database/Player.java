@@ -1,26 +1,59 @@
 package com.example.squadbuilderrepository.Database;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.firebase.firestore.Exclude;
 
-public class Player {
+import java.io.Serializable;
 
+@Entity(tableName = "playerTable")
+public class Player implements Serializable {
+    @PrimaryKey
+    @NonNull
     private String pid;
+    @NonNull
     private String name;
+    @NonNull
     private String position;
     private double price;
     private double rating;
-    private String imageUrl;
+    @NonNull
+    private String imageUri;
+    @Ignore
     private String downloadUrl;
 
+    @Ignore
     public Player() {
     }
 
-    public Player(String name, String position, double price, double rating, String imageUrl) {
+    @Ignore
+    public Player(@NonNull String name,
+                  @NonNull String position,
+                  double price,
+                  double rating,
+                  @NonNull String imageUri) {
         this.name = name;
         this.position = position;
         this.price = price;
         this.rating = rating;
-        this.imageUrl = imageUrl;
+        this.imageUri = imageUri;
+    }
+
+    public Player(@NonNull String pid,
+                  @NonNull String name,
+                  @NonNull String position,
+                  double price,
+                  double rating,
+                  @NonNull String imageUri) {
+        this.pid = pid;
+        this.name = name;
+        this.position = position;
+        this.price = price;
+        this.rating = rating;
+        this.imageUri = imageUri;
     }
 
     @Exclude
@@ -31,7 +64,7 @@ public class Player {
     public void setPid(String pid) {
         this.pid = pid;
     }
-
+    @NonNull
     public String getName() {
         return name;
     }
@@ -39,7 +72,7 @@ public class Player {
     public void setName(String name) {
         this.name = name;
     }
-
+    @NonNull
     public String getPosition() {
         return position;
     }
@@ -63,19 +96,19 @@ public class Player {
     public void setRating(double rating) {
         this.rating = rating;
     }
-    @Exclude
-    public String getImageUrl() {
-        return imageUrl;
+    @NonNull@Exclude
+    public String getImageUri() {
+        return imageUri;
     }
     @Exclude
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUri(@NonNull String imageUri) {
+        this.imageUri = imageUri;
     }
-
+    @Ignore
     public String getDownloadUrl() {
         return downloadUrl;
     }
-
+    @Ignore
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
     }

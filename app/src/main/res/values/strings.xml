@@ -7,6 +7,8 @@
     <string name="enter_rating_hint">Enter Rating</string>
     <string name="dollar_sign">$</string>
     <string name="confirm_label">Confirm</string>
+    <string name="push_local_database">Push Local Database</string>
+    <string name="pull_cloud_database">Pull Cloud Database</string>
 
     <!--Array of Positions for Spinner-->
     <string-array name="position_list">
